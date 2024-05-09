@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace NeoEncoder.Neo_coder
 {
@@ -45,7 +47,24 @@ namespace NeoEncoder.Neo_coder
             => l.Count == 0 ? new MByte(r) : new MByte(l, r);
 
         public override bool Equals(object obj)
-            => GetHashCode() == obj.GetHashCode();
+        {
+            if (obj is MByte) 
+            {
+                MByte m = (MByte)obj;
+                if (m.Count == Count)
+                {
+                    for (int i = 0;i < bytes.Length;i++)
+                    {
+                        if (m[i] != bytes[i])
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override int GetHashCode()
         {
@@ -53,10 +72,12 @@ namespace NeoEncoder.Neo_coder
             {
                 return 0;
             }
-            int hash = 17;
-            foreach (byte element in bytes)
+            int hash;
+            using (SHA1Managed sHA1 = new SHA1Managed())
             {
-                hash = hash * 32677 + elementComparer.GetHashCode(element);
+                byte[] Bsha1 = sHA1.ComputeHash(bytes);
+                hash = BitConverter.ToInt32(Bsha1, 0);
+
             }
             return hash;
         }
