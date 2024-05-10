@@ -38,8 +38,6 @@ namespace NeoEncoder.Neo_coder
             set => bytes[a] = value;
         }
 
-        private static readonly EqualityComparer<byte> elementComparer = EqualityComparer<byte>.Default;
-
         public ushort Get()
             => bytes.Length > 1 ? BitConverter.ToUInt16(bytes) : bytes[0];
 
