@@ -14,8 +14,7 @@
                 index += offset;
                 if (index >= bytes.Length)
                 {
-                    index = index - bytes.Length;
-                    return bytes[index];
+                    return bytes[index - bytes.Length];
                 }
                 return bytes[index];
             }

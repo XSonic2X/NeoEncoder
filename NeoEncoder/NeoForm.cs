@@ -28,6 +28,7 @@ namespace NeoEncoder
         private void button2_Click(object sender, EventArgs e)
         {
             if (!File.Exists(textBox1.Text) || comboBox1.SelectedIndex < 0) { return; }
+            textBox1.Enabled = false;
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -41,12 +42,13 @@ namespace NeoEncoder
                     break;
                 default: break;
             }
-
+            textBox1.Enabled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (!File.Exists(textBox1.Text) || comboBox1.SelectedIndex < 0) { return; }
+            textBox1.Enabled = false;
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -60,6 +62,7 @@ namespace NeoEncoder
                     break;
                 default: break;
             }
+            textBox1.Enabled = true;
         }
         private void Info(int sB, int sE)
         {

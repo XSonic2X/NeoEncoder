@@ -65,7 +65,7 @@
 
             Array.Sort(m, (a, b) =>
             {
-                if (a == b) { return 0;  }
+                if (a == b) { return 0; }
                 for (int i = 0; i < a.Length; i++)
                 {
                     if (a[i] < b[i]) return -1;
@@ -89,9 +89,9 @@
 
         public byte[] InverseTransformBWT(byte[] b)
         {
-            byte[] bytesOffset = new byte[4];
-            Array.Copy(b, b.Length - 4, bytesOffset,0 ,4);
-            int offset = BitConverter.ToInt32(bytesOffset); //Получение стартового смещение
+            byte[] bOffset = new byte[4];
+            Array.Copy(b, b.Length - 4, bOffset,0 ,4);
+            int offset = BitConverter.ToInt32(bOffset); //Получение стартового смещение
 
             byte[] bwt = new byte[b.Length - 4];
             Array.Copy(b,0, bwt,0, b.Length - 4);
@@ -122,42 +122,42 @@
 
         public byte[] LZWCom(byte[] bytes)
         {
-            Dictionary<MByte, ushort> dictionary = new Dictionary<MByte, ushort>();
+            Dictionary<MByte, ushort> dic = new Dictionary<MByte, ushort>();
             for (ushort i = 0; i < 256; i++) //Инициализируем стартовый словарь
             {
-                dictionary.Add(new MByte((byte)i), i);
+                dic.Add(new MByte((byte)i), i);
             }
 
-            List<ushort> ushorts = new List<ushort>();
+            List<ushort> ush = new List<ushort>();
             MByte p = new MByte(), wc;
             foreach (byte c in bytes)//Создания словарь и сжатых данных
             {
                 wc = p + c;
-                if (dictionary.ContainsKey(wc))
+                if (dic.ContainsKey(wc))
                 {
                     p = wc;
                 }
                 else
                 {
-                    ushorts.Add(dictionary[p]);
-                    if (dictionary.Count < tableSize)
+                    ush.Add(dic[p]);
+                    if (dic.Count < tableSize)
                     {
-                        dictionary.Add(wc, (ushort)dictionary.Count);//Добавление нового слова в словарь
+                        dic.Add(wc, (ushort)dic.Count);//Добавление нового слова в словарь
                     }
                     p = new MByte(c);
                 }
             }
-            if (p.Count > 0) { ushorts.Add(dictionary[p]); }
+            if (p.Count > 0) { ush.Add(dic[p]); }
 
             List<byte> data = new List<byte>();//Преобразование сжатых данных в byte
-            for (int i = 0; i < ushorts.Count; i++)
-            { data.AddRange(BitConverter.GetBytes(ushorts[i])); }
+            for (int i = 0; i < ush.Count; i++)
+            { data.AddRange(BitConverter.GetBytes(ush[i])); }
             return data.ToArray();
         }
 
         public byte[] LZWDecom(byte[] bytes)
         {
-            List<ushort> ushorts = new List<ushort>();
+            List<ushort> ush = new List<ushort>();
             ushort k;
 
             for (int i = 0; i < bytes.Length;)//Обратное преобразование byte в ushort
@@ -166,30 +166,30 @@
                 i++;
                 k += (ushort)(256 * bytes[i]);
                 i++;
-                ushorts.Add(k);
+                ush.Add(k);
             }
 
-            Dictionary<ushort, MByte> dictionary = new Dictionary<ushort, MByte>();
+            Dictionary<ushort, MByte> dic = new Dictionary<ushort, MByte>();
             for (ushort i = 0; i < 256; i++)//Инициализируем стартовый словарь
             {
-                dictionary.Add(i, new MByte((byte)i));
+                dic.Add(i, new MByte((byte)i));
             }
 
-            MByte w = dictionary[ushorts.First()], entry;
+            MByte w = dic[ush.First()], entry;
             List<byte> lresult = new List<byte>();
 
             lresult.AddRange(w.bytes);
 
-            for (int i = 1; i < ushorts.Count; i++)
+            for (int i = 1; i < ush.Count; i++)
             {
-                k = ushorts[i];
-                if (dictionary.ContainsKey(k)) { entry = dictionary[k]; }
+                k = ush[i];
+                if (dic.ContainsKey(k)) { entry = dic[k]; }
                 else { entry = w + w[0]; }
 
                 lresult.AddRange(entry.bytes);
-                if (dictionary.Count < tableSize)
+                if (dic.Count < tableSize)
                 {
-                    dictionary.Add((ushort)dictionary.Count, w + entry[0]);
+                    dic.Add((ushort)dic.Count, w + entry[0]);
                 }
                 w = entry;
 
@@ -198,10 +198,10 @@
             return lresult.ToArray();
         }
 
-        private void SetListRLE(List<byte> lbytes, byte currentByte, byte count)
+        private void SetListRLE(List<byte> lb, byte currentByte, byte count)
         {
-            lbytes.Add(currentByte);
-            lbytes.Add((byte)count);
+            lb.Add(currentByte);
+            lb.Add((byte)count);
         }
 
     }

@@ -1,6 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 
 namespace NeoEncoder.Neo_coder
 {
@@ -37,9 +35,6 @@ namespace NeoEncoder.Neo_coder
             get => bytes[a];
             set => bytes[a] = value;
         }
-
-        public ushort Get()
-            => bytes.Length > 1 ? BitConverter.ToUInt16(bytes) : bytes[0];
 
         public static MByte operator +(MByte l, byte r)
             => l.Count == 0 ? new MByte(r) : new MByte(l, r);
@@ -80,7 +75,5 @@ namespace NeoEncoder.Neo_coder
             return hash;
         }
 
-        public override string ToString()
-            => bytes is null ? "null" : Encoding.UTF8.GetString(bytes);
     }
 }
