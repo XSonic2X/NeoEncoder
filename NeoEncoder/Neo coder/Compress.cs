@@ -57,26 +57,29 @@
         public byte[] TransformBWT(byte[] bytes)
         {
             Matrix[] m = new Matrix[bytes.Length];
-
-            for (int i = 0; i < bytes.Length; i++)//Создаю матрицы
+            int i = 0;
+            for (i = 0; i < bytes.Length; i++)//Создаю матрицы
             {
                 m[i] = new Matrix(bytes, i);
             }
-
             Array.Sort(m, (a, b) =>
             {
-                if (a == b) { return 0; }
-                for (int i = 0; i < a.Length; i++)
+                if (a.offset == b.offset) { return 0; }
+                byte aV, bV;
+                int L = a.Length;
+                for (i = 0; i < L; i++)
                 {
-                    if (a[i] < b[i]) return -1;
-                    if (a[i] > b[i]) return 1;
+                    aV = a[i];
+                    bV = b[i];
+                    if (aV > bV) return 1;
+                    if (aV < bV) return -1;
                 }
                 return 0;
             });//Сортируют матрицы
 
             List<byte> bwt = new List<byte>();
             int offset = 0;
-            for (int i = 0; i < bytes.Length; i++)
+            for (i = 0; i < bytes.Length; i++)
             {
                 bwt.Add(m[i].Last());
                 if (m[i].SequenceEqual()) { offset = i; } //Стартового смещение
@@ -86,6 +89,7 @@
 
             return bwt.ToArray();
         }
+
 
         public byte[] InverseTransformBWT(byte[] b)
         {
@@ -97,7 +101,8 @@
             Array.Copy(b,0, bwt,0, b.Length - 4);
 
             (int, byte)[] offsetBWT = new (int, byte)[bwt.Length];
-            for (int i = 0; i < bwt.Length; i++) //Сборка смешных байтов
+            int i;
+            for (i = 0; i < bwt.Length; i++) //Сборка смешных байтов
             {
                 offsetBWT[i].Item1 = i;
                 offsetBWT[i].Item2 = bwt[i];
@@ -111,7 +116,7 @@
                 });//Сортировка смешных байтов
 
             byte[] bytes = new byte[bwt.Length];
-            for (int i = 0; i < bwt.Length; i++) //Сборка в исходных данных
+            for (i = 0; i < bwt.Length; i++) //Сборка в исходных данных
             {
                 bytes[i] = offsetBWT[offset].Item2;
                 offset = offsetBWT[offset].Item1;

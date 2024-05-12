@@ -12,11 +12,7 @@
             get
             {
                 index += offset;
-                if (index >= bytes.Length)
-                {
-                    return bytes[index - bytes.Length];
-                }
-                return bytes[index];
+                return index < bytes.Length ? bytes[index] : bytes[index - bytes.Length];
             }
         }
 
