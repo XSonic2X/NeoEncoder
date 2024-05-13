@@ -133,7 +133,7 @@
                 dic.Add(new MByte((byte)i), i);
             }
 
-            List<ushort> ush = new List<ushort>();
+            List<byte> data = new List<byte>();
             MByte p = new MByte(), wc;
             foreach (byte c in bytes)//Создания словарь и сжатых данных
             {
@@ -144,7 +144,7 @@
                 }
                 else
                 {
-                    ush.Add(dic[p]);
+                    data.AddRange(BitConverter.GetBytes(dic[p]));
                     if (dic.Count < tableSize)
                     {
                         dic.Add(wc, (ushort)dic.Count);//Добавление нового слова в словарь
@@ -152,11 +152,8 @@
                     p = new MByte(c);
                 }
             }
-            if (p.Count > 0) { ush.Add(dic[p]); }
+            if (p.Count > 0) { data.AddRange(BitConverter.GetBytes(dic[p])); }
 
-            List<byte> data = new List<byte>();//Преобразование сжатых данных в byte
-            for (int i = 0; i < ush.Count; i++)
-            { data.AddRange(BitConverter.GetBytes(ush[i])); }
             return data.ToArray();
         }
 
