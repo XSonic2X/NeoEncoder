@@ -1,0 +1,1 @@
+Processing a byte array using the RLE, BWT, and LZW algorithms.
