@@ -8,18 +8,13 @@ namespace NeoEncoder.Neo_coder
             => bytes = null;
 
         public MByte(byte b)
-        {
-            bytes = new byte[1];
-            bytes[0] = b;
-        }
+            => bytes = [b];
 
         private MByte(MByte m, byte b)
         {
             bytes = new byte[m.Count + 1];
             for (int i = 0; i < m.Count; i++)
-            {
                 bytes[i] = m[i];
-            }
             bytes[m.Count] = b;
         }
 
@@ -46,33 +41,21 @@ namespace NeoEncoder.Neo_coder
                 MByte m = (MByte)obj;
                 if (m.Count == Count)
                 {
-                    for (int i = 0;i < bytes.Length;i++)
-                    {
+                    for (int i = 0; i < bytes.Length; i++)
                         if (m[i] != bytes[i])
-                        {
-                            return false;
-                        }
-                    }
+                            goto End;
                     return true;
                 }
             }
+            End:
             return false;
         }
 
         public override int GetHashCode()
         {
-            if (bytes == null)
-            {
-                return 0;
-            }
-            int hash;
+            if (bytes is null) return 0;
             using (SHA1Managed sHA1 = new SHA1Managed())
-            {
-                byte[] Bsha1 = sHA1.ComputeHash(bytes);
-                hash = BitConverter.ToInt32(Bsha1, 0);
-
-            }
-            return hash;
+                return BitConverter.ToInt32(sHA1.ComputeHash(bytes), 0);
         }
 
     }
